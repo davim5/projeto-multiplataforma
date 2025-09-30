@@ -54,16 +54,18 @@ A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desen
 
 | Fase | Descrição | Prazo Estimado |
 | --- | --- | --- |
-| **Design UI/UX** | Criação de wireframes e protótipos de alta fidelidade para as telas principais. | 2 semanas |
-| **Desenvolvimento Backend** | Implementação da API RESTful (endpoints de usuário, pet, passeio, passeador). | 4 semanas |
-| **Desenvolvimento Frontend** | Implementação das telas e integração com a API. | 4 semanas |
-| **Testes Iniciais** | Testes unitários e de integração das funcionalidades principais. | 2 semanas |
+| **Design UI/UX** | Criação de wireframes e protótipos de alta fidelidade para as telas principais. | 1 semana |
+| **Desenvolvimento Backend** | Implementação da API RESTful (endpoints de usuário, pet, passeio, passeador). | 2 semanas |
+| **Desenvolvimento Frontend** | Implementação das telas e integração com a API. | 1 semana |
+| **Testes Iniciais** | Testes unitários e de integração das funcionalidades principais. | 1 semana |
 
 ## Integrantes da Equipe e Seus Papéis
 
-Este projeto está sendo desenvolvido individualmente como parte da Atividade Parcial N705 — Planejamento e Arquitetura de Sistema Multiplataforma, Etapa 1. O trabalho é uma entrega individual, demonstrando a capacidade de concepção e planejamento de um sistema completo.
+Davi Araújo Mendonça Lima - 2222941
+
+Esta atividade está sendo desenvolvida individualmente.
 
 ## ODS 11: Cidades e Comunidades Sustentáveis
 
-Embora indiretamente, o aplicativo contribui para o ODS 11 ao promover o bem-estar animal em ambientes urbanos. Ao facilitar o acesso a passeadores, o aplicativo incentiva a prática de exercícios para cães, o que pode reduzir problemas de comportamento e melhorar a convivência em comunidades, tornando as cidades mais amigáveis para pets e seus tutores. Além disso, ao otimizar o tempo dos tutores, pode-se incentivar o uso de espaços públicos de forma mais consciente e organizada.
+O aplicativo contribui para o ODS 11 ao melhorar a qualidade de vida de tutores de pets e promover uma convivência mais harmoniosa nas cidades. Ao facilitar o acesso a passeadores, ele permite que os tutores conciliem melhor suas rotinas com os cuidados dos animais, reduzindo estresse e aumentando o bem-estar tanto dos pets quanto de seus donos. Com isso, os passeios tornam-se mais frequentes e organizados, estimulando o uso consciente de espaços públicos e fortalecendo a criação de comunidades urbanas mais seguras, acolhedoras e sustentáveis para pessoas e animais.
 
