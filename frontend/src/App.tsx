@@ -25,6 +25,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import Login from './pages/Login/Login';
 import Profile from './pages/Profile/Profile';
+import FindWalker from './pages/FindWalker/FindWalker';
+import RegisterPet from './pages/RegisterPet/RegisterPet';
 
 setupIonicReact();
 
@@ -35,8 +37,8 @@ const App: React.FC = () => (
         <Route exact path="/home">
           <Home />
         </Route>
-        <Route exact path="/">
-          <Redirect to="/login" />
+        <Route exact path="/login">
+          <Redirect to="/" />
         </Route>
         <Route exact path="/register">
           <Register />
@@ -46,6 +48,12 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/profile">
           <Profile />
+        </Route>
+        <Route exact path="/profile/findwalker">
+          <FindWalker />
+        </Route>
+        <Route exact path="/pets/new">
+          <RegisterPet />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

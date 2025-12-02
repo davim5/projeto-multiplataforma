@@ -6,7 +6,8 @@ import {
     updateUser,
     deleteUser,
     loginUser,
-    getProfile
+    getProfile,
+    getUsersByType
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
@@ -17,6 +18,7 @@ router.get("/users/", getUsers);
 router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
+
 router.post("/login/", loginUser);
 
 // Rota protegida

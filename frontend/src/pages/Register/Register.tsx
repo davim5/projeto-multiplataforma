@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import axios from "axios";
 
-const Register: React.FC = () => {
+export default function Register () {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -35,7 +35,6 @@ const Register: React.FC = () => {
       </IonHeader>
 
       <IonContent className="ion-padding">
-        <IonList>
           <IonItem>
             <IonLabel position="floating">Nome</IonLabel>
             <IonInput value={form.name} onIonInput={(e) => handleChange("name", String(e.target.value))} />
@@ -67,7 +66,6 @@ const Register: React.FC = () => {
               <option value="passeador">Passeador</option>
             </select>
           </IonItem>
-        </IonList>
 
         <IonButton expand="full" onClick={handleSubmit} style={{ marginTop: "20px" }}>
           Cadastrar
@@ -75,6 +73,4 @@ const Register: React.FC = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default Register;
+}

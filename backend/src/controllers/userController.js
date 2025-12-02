@@ -45,8 +45,20 @@ export const createUser = async (req, res) => {
 // READ ALL
 export const getUsers = async (req, res) => {
     try {
-        const users = await Users.find();
+        const filters = {};
+
+        // Se vier ?type=passeador, será usado como filtro
+        if (req.query.type) {
+            filters.type = req.query.type;
+        }
+
+        if (req.query.name) {
+            filters.name = { $regex: req.query.name, $options: "i" };
+        }
+
+        const users = await Users.find(filters);
         return res.json(users);
+
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
@@ -147,5 +159,17 @@ export const getProfile = async (req, res) => {
         return res.json(user);
     } catch (err) {
         return res.status(500).json({ error: err.message });
+    }
+};
+
+// GET /api/users?type=passeador
+export const getUsersByType = async (req, res) => {
+    try {
+        const typeFilter = req.query.type ? { type: req.query.type } : {};
+
+        const users = await Users.find(typeFilter);
+        return res.json(users);
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
     }
 };

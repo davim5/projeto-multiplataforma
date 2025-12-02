@@ -47,6 +47,8 @@ npm run start
 cd ./backend 
 npm run start
 
+app rodará em http://localhost:3000/
+
 ```
 
 ## Equipe de desenvolvimento

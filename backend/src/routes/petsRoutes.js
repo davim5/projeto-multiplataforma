@@ -4,15 +4,18 @@ import {
     getPets,
     getPetById,
     updatePet,
-    deletePet
+    deletePet,
+    getPetsByUser
 } from "../controllers/petController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/pets/", createPet);
 router.get("/pets/", getPets);
-router.get("/pets/:id", getPetById);
+// router.get("/pets/:id", getPetById);
 router.put("/pets/:id", updatePet);
 router.delete("/pets/:id", deletePet);
+router.post("/pets/",authMiddleware, createPet);
+router.get("/pets/:id", authMiddleware, getPetsByUser);
 
 export default router;
