@@ -1,10 +1,42 @@
 import Users from "../models/userModel.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { JWT_SECRET } from "../index.js";
 
 // CREATE
 export const createUser = async (req, res) => {
     try {
-        const user = await Users.create(req.body);
-        return res.status(201).json(user);
+        const { name, email, password, phone, type } = req.body;
+
+        // Verifica se o e-mail já existe
+        const userExists = await Users.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ error: "Email já está em uso." });
+        }
+
+        // Criptografa a senha
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Cria o usuário
+        const user = await Users.create({
+            name,
+            email,
+            password: hashedPassword,
+            phone,
+            type
+        });
+
+        return res.status(201).json({
+            message: "Usuário criado com sucesso",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                type: user.type
+            }
+        });
+
     } catch (err) {
         return res.status(400).json({ error: err.message });
     }
@@ -62,4 +94,58 @@ export const deleteUser = async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 };
- 
+
+export const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ error: "Usuário não encontrado" });
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+
+        if (!validPassword) {
+            return res.status(400).json({ error: "Senha incorreta" });
+        }
+
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ error: "JWT_SECRET não configurado" });
+        }
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        return res.status(200).json({
+            message: "Login realizado com sucesso",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email
+            }
+        });
+
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+export const getProfile = async (req, res) => {
+    try {
+        const user = await Users.findById(req.user.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ error: "Usuário não encontrado" });
+        }
+
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import axios from 'axios';
 
-interface UserI {
+export interface UserI {
   name: string;
 }
 

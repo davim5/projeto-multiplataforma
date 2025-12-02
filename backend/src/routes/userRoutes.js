@@ -4,8 +4,11 @@ import {
     getUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser,
+    getProfile
 } from "../controllers/userController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -14,5 +17,8 @@ router.get("/users/", getUsers);
 router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
+router.post("/login/", loginUser);
 
+// Rota protegida
+router.get("/profile", authMiddleware, getProfile);
 export default router;

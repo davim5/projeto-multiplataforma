@@ -4,23 +4,7 @@
 
 Este projeto consiste no desenvolvimento de um aplicativo multiplataforma para agendamento e contratação de serviços de passeio com cachorros. O objetivo principal é conectar tutores de pets a passeadores qualificados, facilitando a gestão e a contratação de passeios de forma eficiente e segura.
 
-## Problema Abordado e Justificativa
-
-Com a crescente urbanização e a rotina agitada, muitos tutores de cães enfrentam dificuldades para garantir que seus pets recebam a quantidade adequada de exercícios e socialização. A falta de tempo ou a ausência de opções confiáveis de passeadores pode comprometer o bem-estar animal. Este aplicativo surge como uma solução para esse problema, oferecendo uma plataforma centralizada onde tutores podem encontrar, agendar e gerenciar passeios para seus cães com profissionais verificados.
-
-## Objetivos do Sistema
-
-- **Facilitar o agendamento:** Proporcionar uma interface intuitiva para tutores agendarem passeios.
-
-- **Conectar tutores e passeadores:** Criar um ecossistema onde tutores encontram passeadores e vice-versa.
-
-- **Garantir a segurança:** Implementar mecanismos de verificação para passeadores e feedback para tutores.
-
-- **Otimizar a gestão:** Permitir que tutores e passeadores gerenciem seus perfis, pets e agendamentos.
-
-## Escopo do Projeto (Funcionalidades Mínimas)
-
-O escopo inicial do projeto foca nas seguintes funcionalidades essenciais:
+## Funcionalidades Implementadas
 
 1. **Cadastro de Usuário:** Permite que tutores e passeadores criem e gerenciem seus perfis na plataforma.
 
@@ -29,6 +13,19 @@ O escopo inicial do projeto foca nas seguintes funcionalidades essenciais:
 1. **Agendamento de Passeio:** Tutores podem solicitar e agendar passeios, selecionando datas, horários e, opcionalmente, um passeador específico.
 
 1. **Seleção de Passeador:** Tutores podem visualizar perfis de passeadores disponíveis e escolher um para o passeio.
+
+## Tecnologias Utilizadas
+
+- **Frontend:** Ionic, React, Typescript.
+
+- **Backend:** Node.js, JWT, express.
+
+- **Banco de dados:** MongoDB.
+
+- **Ferramentas de Desenvolvimento:** VSCode, Insomnia, MongoDB Compass.
+
+## Escopo do Projeto (Funcionalidades Mínimas)
+
 
 ## Visão Geral da Arquitetura
 
@@ -42,24 +39,17 @@ A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desen
       Mobile/Web                  API/Logic                 Data Storage
 ```
 
-## Tecnologias Propostas
+## Intruções de instalação e execução 
 
-- **Backend/API:** Node.js (para desenvolvimento rápido e escalabilidade)
+ Na pasta do projeto
+cd ./frontend 
+npm run start
 
-- **Frontend:** Ionic (para desenvolvimento multiplataforma com uma única base de código)
+cd ./backend 
+npm run start
 
-- **Banco de Dados:** MongoDB (para flexibilidade e escalabilidade com dados não-estruturados)
 
-## Cronograma para Etapa 2 (N708)
-
-| Fase | Descrição | Prazo Estimado |
-| --- | --- | --- |
-| **Design UI/UX** | Criação de wireframes e protótipos de alta fidelidade para as telas principais. | 1 semana |
-| **Desenvolvimento Backend** | Implementação da API RESTful (endpoints de usuário, pet, passeio, passeador). | 2 semanas |
-| **Desenvolvimento Frontend** | Implementação das telas e integração com a API. | 1 semana |
-| **Testes Iniciais** | Testes unitários e de integração das funcionalidades principais. | 1 semana |
-
-## Integrantes da Equipe e Seus Papéis
+## Equipe de desenvolvimento
 
 Davi Araújo Mendonça Lima - 2222941
 

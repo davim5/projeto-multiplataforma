@@ -16,6 +16,7 @@ dotenv.config({ path: './src/.env' })
 
 const PORT = process.env.PORT || 3333;
 const MONGO_URL = process.env.MONGO_URL;
+export const JWT_SECRET = process.env.JWT_SECRET;
 
 mongoose
 .connect(MONGO_URL)
