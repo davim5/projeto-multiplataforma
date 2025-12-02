@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useIonRouter } from "@ionic/react";
+
+
 import axios from "axios";
 
 import {
@@ -17,7 +20,11 @@ import {
   IonLabel,
   IonSpinner,
   IonAvatar,
+  IonModal,
+  IonIcon
 } from "@ionic/react";
+
+import { close } from "ionicons/icons";
 
 interface UserProfile {
   name: string;
@@ -38,6 +45,19 @@ export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+
+  const openModal = (pet: Pet) => {
+    setSelectedPet(pet);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedPet(null);
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -106,7 +126,7 @@ export default function Profile() {
 
         {/* FOTO / HEADER */}
         <div style={{ textAlign: "center", marginTop: 20 }}>
-          <IonAvatar style={{ margin: "0 auto" }}>
+          <IonAvatar style={{ margin: "0 auto", border:"4px solid white"}}>
             <img src="https://via.placeholder.com/120" alt="foto perfil" />
           </IonAvatar>
 
@@ -145,20 +165,13 @@ export default function Profile() {
         {/* PETS */}
         <h2 style={{ textAlign: "center" }}>Meus Pets</h2>
 
-        <IonButton
-          expand="block"
-          color="success"
-          onClick={() => (window.location.href = "/pets/new")}
-        >
-          + Cadastrar Pet
-        </IonButton>
         {pets.length === 0 ? (
           <p style={{ textAlign: "center", marginTop: 20 }}>
             Você ainda não cadastrou nenhum pet.
           </p>
         ) : (
           pets.map((pet) => (
-            <IonCard key={pet._id}>
+            <IonCard key={pet._id} onClick={() => openModal(pet)}>
               <IonCardHeader>
                 <IonCardTitle>{pet.name}</IonCardTitle>
               </IonCardHeader>
@@ -168,17 +181,81 @@ export default function Profile() {
                 {pet.age && <p><strong>Idade:</strong> {pet.age}</p>}
                 {pet.size && <p><strong>Porte:</strong> {pet.size}</p>}
 
-                <IonButton
-                  expand="block"
-                  color="primary"
-                  onClick={() => (window.location.href = `/pets/${pet._id}`)}
-                >
+                <IonButton expand="block" color="primary">
                   Ver detalhes
                 </IonButton>
               </IonCardContent>
             </IonCard>
           ))
         )}
+         <IonButton
+          expand="block"
+          color="success"
+          onClick={() => (window.location.href = "/pets/new")}
+        >
+          + Cadastrar Pet
+        </IonButton>
+        {/* MODAL DE DETALHES DO PET */}
+        <IonModal isOpen={modalOpen} onDidDismiss={closeModal}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Detalhes do Pet</IonTitle>
+              <IonButton slot="end" fill="clear" onClick={closeModal}>
+                <IonIcon icon={close} />
+              </IonButton>
+            </IonToolbar>
+          </IonHeader>
+
+          <IonContent className="ion-padding">
+            {selectedPet && (
+              <>
+                <h2>{selectedPet.name}</h2>
+
+                {selectedPet.breed && (
+                  <p><strong>Raça:</strong> {selectedPet.breed}</p>
+                )}
+
+                {selectedPet.age && (
+                  <p><strong>Idade:</strong> {selectedPet.age}</p>
+                )}
+
+                {selectedPet.size && (
+                  <p><strong>Porte:</strong> {selectedPet.size}</p>
+                )}
+
+                <IonButton
+                  expand="block"
+                  color="warning"
+                  onClick={() => {
+                    window.location.href = `/pets/edit/${selectedPet._id}`;
+                  }}
+                >
+                  Editar Pet
+                </IonButton>
+
+                <IonButton
+                  expand="block"
+                  color="medium"
+                  onClick={closeModal}
+                >
+                  Fechar
+                </IonButton>
+              </>
+            )}
+          </IonContent>
+        </IonModal>
+
+        
+        <IonButton
+          expand="block"
+          color="primary"
+          style={{ marginTop: 20 }}
+          onClick={() => {
+            localStorage.setItem("userPets", JSON.stringify(pets));
+            window.location.href = "/profile/findWalker";          }}
+        >
+          Agentar Passeador
+        </IonButton>
 
         {/* BOTÃO SAIR */}
         <IonButton
@@ -187,6 +264,7 @@ export default function Profile() {
           style={{ marginTop: 20 }}
           onClick={() => {
             localStorage.removeItem("token");
+            localStorage.removeItem("userPets");
             window.location.href = "/login";
           }}
         >

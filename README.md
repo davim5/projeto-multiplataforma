@@ -40,17 +40,21 @@ A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desen
 ```
 
 ## Intruções de instalação e execução 
+### 1. Clonar Repositório
 ```
-cd ./frontend 
-npm run start
-
-cd ./backend 
-npm run start
-
-app rodará em http://localhost:3000/
-
+git clone https://github.com/davim5/projeto-multiplataforma.git
+cd ./projeto-multiplataforma
+```
+### 2. Instalar dependências
+```
+npm i
+npm run install-all
 ```
 
+### 3. Executar
+```
+npm run start // executa npm run start em ambos projetos
+```
 ## Equipe de desenvolvimento
 
 Davi Araújo Mendonça Lima - 2222941

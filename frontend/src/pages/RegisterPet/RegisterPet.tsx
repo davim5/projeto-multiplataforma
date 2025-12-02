@@ -129,7 +129,7 @@ export default function RegisterPet() {
             expand="block"
             fill="outline"
             color="medium"
-            onClick={() => router.back()}
+            onClick={() => (window.location.href = "/profile")}
             style={{ marginTop: 10 }}
           >
             Cancelar

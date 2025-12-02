@@ -1,0 +1,27 @@
+{
+  "name": "projeto-multiplataforma",
+  "version": "1.0.0",
+  "description": "Este projeto consiste no desenvolvimento de um aplicativo multiplataforma para agendamento e contratação de serviços de passeio com cachorros. O objetivo principal é conectar tutores de pets a passeadores qualificados, facilitando a gestão e a contratação de passeios de forma eficiente e segura.",
+  "homepage": "https://github.com/davim5/projeto-multiplataforma#readme",
+  "bugs": {
+    "url": "https://github.com/davim5/projeto-multiplataforma/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davim5/projeto-multiplataforma.git"
+  },
+  "license": "ISC",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "install-all": "concurrently \"npm --prefix frontend install\" \"npm --prefix backend install\"",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "npm --prefix frontend start",
+    "start:backend": "npm --prefix backend start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
