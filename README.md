@@ -40,14 +40,14 @@ A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desen
 ```
 
 ## Intruções de instalação e execução 
-
- Na pasta do projeto
+```
 cd ./frontend 
 npm run start
 
 cd ./backend 
 npm run start
 
+```
 
 ## Equipe de desenvolvimento
 
