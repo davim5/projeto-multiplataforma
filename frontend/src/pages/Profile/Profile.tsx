@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useIonRouter } from "@ionic/react";
-
-
 import axios from "axios";
-
 import {
   IonPage,
   IonHeader,
@@ -23,7 +19,6 @@ import {
   IonModal,
   IonIcon
 } from "@ionic/react";
-
 import { close } from "ionicons/icons";
 
 interface UserProfile {
@@ -41,9 +36,20 @@ interface Pet {
   size?: string;
 }
 
+interface Walk {
+  _id: string;
+  pet_id: Pet;
+  walker_id: { name: string };
+  day: string;
+  start_time: string;
+  duration: number;
+  status: string;
+}
+
 export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [walks, setWalks] = useState<Walk[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -53,7 +59,6 @@ export default function Profile() {
     setSelectedPet(pet);
     setModalOpen(true);
   };
-
   const closeModal = () => {
     setModalOpen(false);
     setSelectedPet(null);
@@ -63,7 +68,6 @@ export default function Profile() {
     const loadData = async () => {
       try {
         const token = localStorage.getItem("token");
-
         if (!token) {
           window.location.href = "/login";
           return;
@@ -73,15 +77,19 @@ export default function Profile() {
         const profileRes = await axios.get("http://localhost:8000/api/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         setUser(profileRes.data);
 
         // Buscar pets do tutor
         const petsRes = await axios.get("http://localhost:8000/api/pets/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         setPets(petsRes.data);
+
+        // Buscar passeios do usuário
+        const walksRes = await axios.get("http://localhost:8000/api/walk/user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setWalks(walksRes.data);
 
         setLoading(false);
       } catch (err) {
@@ -123,13 +131,11 @@ export default function Profile() {
       </IonHeader>
 
       <IonContent className="ion-padding">
-
         {/* FOTO / HEADER */}
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <IonAvatar style={{ margin: "0 auto", border:"4px solid white"}}>
             <img src="https://via.placeholder.com/120" alt="foto perfil" />
           </IonAvatar>
-
           <h2 style={{ marginTop: 10 }}>{user.name}</h2>
           <p>{user.email}</p>
         </div>
@@ -145,56 +151,34 @@ export default function Profile() {
         </IonList>
 
         {/* BOTÕES DO PERFIL */}
-        <IonButton
-          expand="block"
-          onClick={() => (window.location.href = "/profile/edit")}
-        >
-          Editar Perfil
-        </IonButton>
-
-        <IonButton
-          expand="block"
-          color="medium"
-          onClick={() => (window.location.href = "/profile/change-password")}
-        >
-          Trocar Senha
-        </IonButton>
+        <IonButton expand="block" onClick={() => window.location.href = "/profile/edit"}>Editar Perfil</IonButton>
+        <IonButton expand="block" color="medium" onClick={() => window.location.href = "/profile/change-password"}>Trocar Senha</IonButton>
 
         <hr style={{ margin: "20px 0" }} />
 
         {/* PETS */}
         <h2 style={{ textAlign: "center" }}>Meus Pets</h2>
-
         {pets.length === 0 ? (
-          <p style={{ textAlign: "center", marginTop: 20 }}>
-            Você ainda não cadastrou nenhum pet.
-          </p>
+          <p style={{ textAlign: "center", marginTop: 20 }}>Você ainda não cadastrou nenhum pet.</p>
         ) : (
           pets.map((pet) => (
             <IonCard key={pet._id} onClick={() => openModal(pet)}>
               <IonCardHeader>
                 <IonCardTitle>{pet.name}</IonCardTitle>
               </IonCardHeader>
-
               <IonCardContent>
                 {pet.breed && <p><strong>Raça:</strong> {pet.breed}</p>}
                 {pet.age && <p><strong>Idade:</strong> {pet.age}</p>}
                 {pet.size && <p><strong>Porte:</strong> {pet.size}</p>}
-
-                <IonButton expand="block" color="primary">
-                  Ver detalhes
-                </IonButton>
               </IonCardContent>
             </IonCard>
           ))
         )}
-         <IonButton
-          expand="block"
-          color="success"
-          onClick={() => (window.location.href = "/pets/new")}
-        >
+
+        <IonButton expand="block" color="success" onClick={() => window.location.href = "/pets/new"}>
           + Cadastrar Pet
         </IonButton>
+
         {/* MODAL DE DETALHES DO PET */}
         <IonModal isOpen={modalOpen} onDidDismiss={closeModal}>
           <IonHeader>
@@ -205,69 +189,68 @@ export default function Profile() {
               </IonButton>
             </IonToolbar>
           </IonHeader>
-
           <IonContent className="ion-padding">
             {selectedPet && (
               <>
                 <h2>{selectedPet.name}</h2>
+                {selectedPet.breed && <p><strong>Raça:</strong> {selectedPet.breed}</p>}
+                {selectedPet.age && <p><strong>Idade:</strong> {selectedPet.age}</p>}
+                {selectedPet.size && <p><strong>Porte:</strong> {selectedPet.size}</p>}
 
-                {selectedPet.breed && (
-                  <p><strong>Raça:</strong> {selectedPet.breed}</p>
-                )}
+                <h3 style={{ marginTop: 20 }}>Passeios Agendados</h3>
+                {walks
+                  .filter(w => w.pet_id._id === selectedPet._id)
+                  .map((walk) => (
+                    <IonCard key={walk._id}>
+                      <IonCardContent>
+                        {/* <p><strong>Passeador:</strong> {walk.walker_id.name}</p> */}
+                        <p><strong>Data:</strong> {new Date(walk.day).toLocaleDateString()}</p>
+                        <p><strong>Hora:</strong> {walk.start_time}</p>
+                        <p><strong>Duração:</strong> {walk.duration} min</p>
+                        <p><strong>Status:</strong> {walk.status}</p>
+                      </IonCardContent>
+                    </IonCard>
+                  ))}
+                {walks.filter(w => w.pet_id._id === selectedPet._id).length === 0 && <p>Nenhum passeio agendado.</p>}
 
-                {selectedPet.age && (
-                  <p><strong>Idade:</strong> {selectedPet.age}</p>
-                )}
-
-                {selectedPet.size && (
-                  <p><strong>Porte:</strong> {selectedPet.size}</p>
-                )}
-
-                <IonButton
-                  expand="block"
-                  color="warning"
-                  onClick={() => {
-                    window.location.href = `/pets/edit/${selectedPet._id}`;
-                  }}
-                >
-                  Editar Pet
-                </IonButton>
-
-                <IonButton
-                  expand="block"
-                  color="medium"
-                  onClick={closeModal}
-                >
-                  Fechar
-                </IonButton>
+                <IonButton expand="block" color="warning" onClick={() => window.location.href = `/pets/edit/${selectedPet._id}`}>Editar Pet</IonButton>
+                <IonButton expand="block" color="medium" onClick={closeModal}>Fechar</IonButton>
               </>
             )}
           </IonContent>
         </IonModal>
 
-        
-        <IonButton
-          expand="block"
-          color="primary"
-          style={{ marginTop: 20 }}
-          onClick={() => {
-            localStorage.setItem("userPets", JSON.stringify(pets));
-            window.location.href = "/profile/findWalker";          }}
-        >
-          Agentar Passeador
+        {/* PASSEIOS AGENDADOS */}
+  <h2 style={{ textAlign: "center", marginTop: 30 }}>Passeios Agendados</h2>
+  {walks.length === 0 ? (
+    <p style={{ textAlign: "center", marginTop: 10 }}>Nenhum passeio agendado.</p>
+  ) : (
+    walks.map((walk) => (
+      <IonCard key={walk._id}>
+        <IonCardHeader>
+          <IonCardTitle>{walk.pet_id.name}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          {/* <p><strong>Passeador:</strong> {walk.walker_id.name}</p> */}
+          <p><strong>Data:</strong> {new Date(walk.day).toLocaleDateString()}</p>
+          <p><strong>Hora:</strong> {walk.start_time}</p>
+          <p><strong>Duração:</strong> {walk.duration} min</p>
+          <p><strong>Status:</strong> {walk.status}</p>
+        </IonCardContent>
+      </IonCard>
+    ))
+  )}
+
+        <IonButton expand="block" color="primary" style={{ marginTop: 20 }} onClick={() => window.location.href = "/profile/findWalker"}>
+          Agendar Passeador
         </IonButton>
 
         {/* BOTÃO SAIR */}
-        <IonButton
-          expand="block"
-          color="danger"
-          style={{ marginTop: 20 }}
-          onClick={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("userPets");
-            window.location.href = "/login";
-          }}
-        >
+        <IonButton expand="block" color="danger" style={{ marginTop: 20 }} onClick={() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userPets");
+          window.location.href = "/login";
+        }}>
           Sair
         </IonButton>
       </IonContent>
