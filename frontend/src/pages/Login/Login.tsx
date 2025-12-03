@@ -71,6 +71,7 @@ export default function Login() {
           <IonInput
             type="email"
             value={email}
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion                  
             onIonChange={(e) => setEmail(e.detail.value!)}
           />
         </IonItem>
@@ -80,6 +81,7 @@ export default function Login() {
           <IonInput
             type="password"
             value={password}
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onIonChange={(e) => setPassword(e.detail.value!)}
           />
         </IonItem>
