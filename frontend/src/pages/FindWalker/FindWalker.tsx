@@ -19,6 +19,7 @@ import {
   IonSpinner,
   IonToast,
 } from "@ionic/react";
+import api from "../../services/api";
 
 interface Walker {
   _id: string;
@@ -67,8 +68,8 @@ export default function FindWalker() {
   useEffect(() => {
     const fetchWalkers = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:8000/api/users?type=passeador"
+        const { data } = await api.get(
+          "/users?type=passeador"
         );
         setWalkers(data);
       } catch (error) {
@@ -87,7 +88,7 @@ export default function FindWalker() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const { data } = await axios.get("http://localhost:8000/api/pets/user", {
+      const { data } = await api.get("/pets/user", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -113,8 +114,8 @@ export default function FindWalker() {
     if (!token) return;
 
     try {
-      await axios.post(
-        "http://localhost:8000/api/walk",
+      await api.post(
+        "/walk",
         {
           walker_id: selectedWalker._id,
           pet_id: selectedPet,

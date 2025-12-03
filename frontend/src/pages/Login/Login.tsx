@@ -12,6 +12,7 @@ import {
   IonToast
 } from "@ionic/react";
 import axios from "axios";
+import api from "../../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/api/login", {
+      const response = await api.post("/login", {
         email,
         password,
       });

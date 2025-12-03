@@ -11,8 +11,8 @@ import {
   IonLabel,
   IonToast,
 } from "@ionic/react";
-import axios from "axios";
 import { parseAxiosError } from "../../utils/parseAxiosError"; // ajuste o caminho
+import api from "../../services/api";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -33,7 +33,7 @@ export default function Register() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:8000/api/users", form);
+      await api.post("/users", form);
 
       setToastColor("success");
       setToastMessage("Cadastro realizado com sucesso!");

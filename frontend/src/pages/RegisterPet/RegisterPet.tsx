@@ -15,9 +15,9 @@ import {
   IonToast,
 } from "@ionic/react";
 import React, { useState } from "react";
-import axios from "axios";
 import { useIonRouter } from "@ionic/react";
 import { parseAxiosError } from "../../utils/parseAxiosError";
+import api from "../../services/api";
 
 export default function RegisterPet() {
   const router = useIonRouter();
@@ -48,7 +48,7 @@ export default function RegisterPet() {
         observations,
       };
 
-      await axios.post("http://localhost:8000/api/pets", body, {
+      await api.post("/pets", body, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

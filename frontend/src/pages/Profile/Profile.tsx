@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import ProfileTutor from "../ProfileTutor/ProfileTutor";
 import ProfileWalker from "../ProfileWalker/ProfileWalker";
 import { UserProfile } from "../../types";
+import api from "../../services/api";
 
 export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -13,7 +13,7 @@ export default function Profile() {
       const token = localStorage.getItem("token");
       if (!token) return (window.location.href = "/login");
 
-      const { data } = await axios.get("http://localhost:8000/api/profile", {
+      const { data } = await api.get("/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

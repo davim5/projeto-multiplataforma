@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   IonPage,
   IonHeader,
@@ -21,6 +20,7 @@ import {
 } from "@ionic/react";
 import { parseAxiosError } from "../../utils/parseAxiosError"; // ajuste o path
 import { ProfileWalkerProps, Walk } from "../../types";
+import api from "../../services/api";
 
 export default function ProfileWalker({ user }: ProfileWalkerProps) {
   const [walks, setWalks] = useState<Walk[]>([]);
@@ -44,7 +44,7 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:8000/api/walk/walker", {
+      const res = await api.get("/walk/walker", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -62,8 +62,8 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.patch(
-        `http://localhost:8000/api/walk/${walkId}`,
+      await api.patch(
+        `/walk/${walkId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

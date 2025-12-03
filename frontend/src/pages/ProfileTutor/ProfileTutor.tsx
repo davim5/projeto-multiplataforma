@@ -23,6 +23,7 @@ import {
 import { close } from "ionicons/icons";
 import { parseAxiosError } from "../../utils/parseAxiosError";
 import { Pet, ProfileTutorProps, Walk } from "../../types";
+import api from "../../services/api";
 
 export default function ProfileTutor({ user }: ProfileTutorProps) {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -57,13 +58,13 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
         }
 
         // Buscar pets
-        const petsRes = await axios.get("http://localhost:8000/api/pets/user", {
+        const petsRes = await api.get("/pets/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPets(petsRes.data);
 
         // Buscar passeios
-        const walksRes = await axios.get("http://localhost:8000/api/walk/user", {
+        const walksRes = await api.get("/walk/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWalks(walksRes.data);
