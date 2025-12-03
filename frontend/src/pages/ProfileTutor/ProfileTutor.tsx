@@ -22,36 +22,7 @@ import {
 } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { parseAxiosError } from "../../utils/parseAxiosError";
-
-interface UserProfile {
-  _id?: string;
-  name: string;
-  email: string;
-  phone: string;
-  type: string;
-}
-
-interface Pet {
-  _id: string;
-  name: string;
-  breed?: string;
-  age?: string;
-  size?: string;
-}
-
-interface Walk {
-  _id: string;
-  pet_id: Pet;
-  walker_id: { name: string };
-  day: string;
-  start_time: string;
-  duration: number;
-  status: string;
-}
-
-interface ProfileTutorProps {
-  user: UserProfile;
-}
+import { Pet, ProfileTutorProps, Walk } from "../../types";
 
 export default function ProfileTutor({ user }: ProfileTutorProps) {
   const [pets, setPets] = useState<Pet[]>([]);

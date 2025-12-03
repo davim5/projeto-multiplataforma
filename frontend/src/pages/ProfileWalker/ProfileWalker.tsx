@@ -16,30 +16,11 @@ import {
   IonCardTitle,
   IonCardContent,
   IonSpinner,
-  IonActionSheet
+  IonActionSheet,
+  IonToast
 } from "@ionic/react";
-
-interface UserProfile {
-  _id?: string;
-  name: string;
-  email: string;
-  phone: string;
-  type: string;
-}
-
-interface Walk {
-  _id: string;
-  pet_id: { name: string };
-  owner_id: { name: string };
-  day: string;
-  start_time: string;
-  duration: number;
-  status: string;
-}
-
-interface ProfileWalkerProps {
-  user: UserProfile;
-}
+import { parseAxiosError } from "../../utils/parseAxiosError"; // ajuste o path
+import { ProfileWalkerProps, Walk } from "../../types";
 
 export default function ProfileWalker({ user }: ProfileWalkerProps) {
   const [walks, setWalks] = useState<Walk[]>([]);
@@ -48,6 +29,10 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
   // Controle do ActionSheet
   const [selectedWalk, setSelectedWalk] = useState<Walk | null>(null);
   const [showActionSheet, setShowActionSheet] = useState(false);
+
+  // Toast
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const STATUS_LIST = ["pendente", "confirmado", "recusado", "concluido", "cancelado"];
 
@@ -64,14 +49,15 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
       });
 
       setWalks(res.data);
-    } catch (err) {
-      console.error("Erro ao carregar passeios:", err);
+    } catch (err: unknown) {
+      const msg = parseAxiosError(err, "Erro ao carregar passeios.");
+      setToastMessage(msg);
+      setShowToast(true);
     } finally {
       setLoading(false);
     }
   };
 
-  // Atualizar status do passeio
   const updateWalkStatus = async (walkId: string, newStatus: string) => {
     try {
       const token = localStorage.getItem("token");
@@ -87,8 +73,13 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
         prev.map((w) => (w._id === walkId ? { ...w, status: newStatus } : w))
       );
 
-    } catch (err) {
-      console.error("Erro ao atualizar status:", err);
+      setToastMessage("Status atualizado!");
+      setShowToast(true);
+
+    } catch (err: unknown) {
+      const msg = parseAxiosError(err, "Erro ao atualizar status.");
+      setToastMessage(msg);
+      setShowToast(true);
     }
   };
 
@@ -181,7 +172,16 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
           ]}
         />
 
-        {/* botão sair */}
+        {/* TOAST */}
+        <IonToast
+          isOpen={showToast}
+          message={toastMessage}
+          duration={2000}
+          color="danger"
+          onDidDismiss={() => setShowToast(false)}
+        />
+
+        {/* Logout */}
         <IonButton
           expand="block"
           color="danger"
