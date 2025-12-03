@@ -24,6 +24,8 @@ Este projeto consiste no desenvolvimento de um aplicativo multiplataforma para a
 
 - **Ferramentas de Desenvolvimento:** VSCode, Insomnia, MongoDB Compass.
 
+- **Deploy:** Vercel(Frontend) e Render(Backend).
+
 ## Visão Geral da Arquitetura
 
 A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desenvolvido em Ionic, um backend em Node.js e um banco de dados MongoDB. A comunicação entre o frontend e o backend é realizada através de uma API RESTful.

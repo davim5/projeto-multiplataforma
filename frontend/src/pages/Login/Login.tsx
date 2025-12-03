@@ -9,7 +9,8 @@ import {
   IonButton,
   IonItem,
   IonLabel,
-  IonToast
+  IonToast,
+  IonSpinner
 } from "@ionic/react";
 import axios from "axios";
 import api from "../../services/api";
@@ -19,13 +20,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false); // 👈 estado do spinner
 
   const handleLogin = async () => {
+    if (!email || !password) return;
+
+    setLoading(true); // 🔥 ativa o spinner
+
     try {
-      const response = await api.post("/login", {
-        email,
-        password,
-      });
+      const response = await api.post("/login", { email, password });
 
       const token = response.data.token;
 
@@ -33,22 +36,23 @@ export default function Login() {
         throw new Error("Token não recebido");
       }
 
-      // Salvar token
       localStorage.setItem("token", token);
-
-      // Redirecionar para o Profile
       window.location.href = "/profile";
-    } catch (error: unknown) {
-        let msg = "Erro ao fazer login";
 
-        if (axios.isAxiosError(error)) {
-          msg = error.response?.data?.error || msg;
-        } else if (error instanceof Error) {
-          msg = error.message;
-        }
+    } catch (error: unknown) {
+      let msg = "Erro ao fazer login";
+
+      if (axios.isAxiosError(error)) {
+        msg = error.response?.data?.error || msg;
+      } else if (error instanceof Error) {
+        msg = error.message;
+      }
 
       setMessage(msg);
       setShowError(true);
+
+    } finally {
+      setLoading(false); // 🔥 desativa o spinner
     }
   };
 
@@ -67,7 +71,6 @@ export default function Login() {
           <IonInput
             type="email"
             value={email}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onIonChange={(e) => setEmail(e.detail.value!)}
           />
         </IonItem>
@@ -77,7 +80,6 @@ export default function Login() {
           <IonInput
             type="password"
             value={password}
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onIonChange={(e) => setPassword(e.detail.value!)}
           />
         </IonItem>
@@ -86,8 +88,13 @@ export default function Login() {
           expand="block"
           style={{ marginTop: 20 }}
           onClick={handleLogin}
+          disabled={loading}      // ⛔ impede múltiplos cliques
         >
-          Entrar
+          {loading ? (
+            <IonSpinner name="crescent" />
+          ) : (
+            "Entrar"
+          )}
         </IonButton>
 
         <IonButton
