@@ -24,9 +24,6 @@ Este projeto consiste no desenvolvimento de um aplicativo multiplataforma para a
 
 - **Ferramentas de Desenvolvimento:** VSCode, Insomnia, MongoDB Compass.
 
-## Escopo do Projeto (Funcionalidades Mínimas)
-
-
 ## Visão Geral da Arquitetura
 
 A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desenvolvido em Ionic, um backend em Node.js e um banco de dados MongoDB. A comunicação entre o frontend e o backend é realizada através de uma API RESTful.
@@ -38,6 +35,9 @@ A arquitetura do sistema segue um modelo cliente-servidor, com um frontend desen
 +-------------------+       +-------------------+       +-------------------+
       Mobile/Web                  API/Logic                 Data Storage
 ```
+
+## Acesso ao Sistema
+URL de acesso: https://projeto-multiplataforma-satq.vercel.app/
 
 ## Intruções de instalação e execução 
 ### 1. Clonar Repositório
