@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel } from "@ionic/react";
 import axios from "axios";
 
 export default function Register () {

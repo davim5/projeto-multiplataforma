@@ -32,7 +32,6 @@ export default function Profile() {
   if (loading) return <p>Carregando...</p>;
   if (!user) return <p>Erro ao carregar perfil.</p>;
 
-  // 🔥 Roteamento para páginas específicas por tipo
   if (user.type === "tutor") return <ProfileTutor user={user} />;
   if (user.type === "passeador") return <ProfileWalker user={user} />;
 

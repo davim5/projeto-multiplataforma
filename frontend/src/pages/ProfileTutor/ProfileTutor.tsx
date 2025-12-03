@@ -17,9 +17,11 @@ import {
   IonSpinner,
   IonAvatar,
   IonModal,
-  IonIcon
+  IonIcon,
+  IonToast
 } from "@ionic/react";
 import { close } from "ionicons/icons";
+import { parseAxiosError } from "../../utils/parseAxiosError";
 
 interface UserProfile {
   _id?: string;
@@ -59,6 +61,9 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
   const openModal = (pet: Pet) => {
     setSelectedPet(pet);
     setModalOpen(true);
@@ -74,6 +79,12 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
       try {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+          setToastMessage("Usuário não autenticado.");
+          setShowToast(true);
+          return;
+        }
+
         // Buscar pets
         const petsRes = await axios.get("http://localhost:8000/api/pets/user", {
           headers: { Authorization: `Bearer ${token}` },
@@ -85,9 +96,14 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWalks(walksRes.data);
-
-      } catch (err) {
-        console.error("Erro ao carregar dados:", err);
+        
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+          setToastMessage(parseAxiosError(err, "Erro ao cadastrar o pet"));
+        } else {
+          setToastMessage("Erro desconhecido ao carregar dados.");
+        }
+        setShowToast(true);
       } finally {
         setLoading(false);
       }
@@ -137,7 +153,6 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
           </IonItem>
         </IonList>
 
-        {/* BOTÕES */}
         <IonButton expand="block" onClick={() => window.location.href = "/profile/edit"}>Editar Perfil</IonButton>
         <IonButton expand="block" color="medium" onClick={() => window.location.href = "/profile/change-password"}>Trocar Senha</IonButton>
 
@@ -251,6 +266,15 @@ export default function ProfileTutor({ user }: ProfileTutorProps) {
         </IonButton>
 
       </IonContent>
+
+      {/* TOAST GLOBAL */}
+      <IonToast
+        isOpen={showToast}
+        message={toastMessage}
+        duration={2000}
+        color="danger"
+        onDidDismiss={() => setShowToast(false)}
+      />
     </IonPage>
   );
 }

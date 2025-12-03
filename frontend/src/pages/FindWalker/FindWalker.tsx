@@ -17,6 +17,7 @@ import {
   IonDatetime,
   IonInput,
   IonSpinner,
+  IonToast,
 } from "@ionic/react";
 
 interface Walker {
@@ -36,16 +37,31 @@ export default function FindWalker() {
   const [walkers, setWalkers] = useState<Walker[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal States
+  // Modal
   const [showModal, setShowModal] = useState(false);
   const [selectedWalker, setSelectedWalker] = useState<Walker | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
 
   // Form fields
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [date, setDate] = useState("") as any;
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState("");
   const [selectedPet, setSelectedPet] = useState("");
+
+  // Toast
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const showError = (msg: string) => {
+    setToastMessage(msg);
+    setShowToast(true);
+  };
+
+  const showSuccess = (msg: string) => {
+    setToastMessage(msg);
+    setShowToast(true);
+  };
 
   // Carrega passeadores
   useEffect(() => {
@@ -56,7 +72,7 @@ export default function FindWalker() {
         );
         setWalkers(data);
       } catch (error) {
-        console.error("Erro ao carregar passeadores:", error);
+        showError("Erro ao carregar passeadores");
       } finally {
         setLoading(false);
       }
@@ -65,17 +81,19 @@ export default function FindWalker() {
     fetchWalkers();
   }, []);
 
-  // Carrega pets do usuário
+  // Carregar pets
   const loadPets = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
+
       const { data } = await axios.get("http://localhost:8000/api/pets/user", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setPets(data);
     } catch (err) {
-      console.error("Erro ao carregar pets:", err);
+      showError("Erro ao carregar seus pets");
     }
   };
 
@@ -87,7 +105,7 @@ export default function FindWalker() {
 
   const searchWalkers = async () => {
     if (!selectedWalker || !date || !time || !duration || !selectedPet) {
-      alert("Preencha todos os campos!");
+      showError("Preencha todos os campos!");
       return;
     }
 
@@ -96,11 +114,11 @@ export default function FindWalker() {
 
     try {
       await axios.post(
-        "http://localhost:8000/api/walk", 
+        "http://localhost:8000/api/walk",
         {
           walker_id: selectedWalker._id,
           pet_id: selectedPet,
-          day: date, 
+          day: date,
           start_time: time,
           duration: Number(duration),
           obs: "",
@@ -110,20 +128,19 @@ export default function FindWalker() {
         }
       );
 
-      alert("Passeio solicitado com sucesso!");
+      showSuccess("Passeio solicitado com sucesso!");
+
       setShowModal(false);
       setSelectedPet("");
       setDate("");
       setTime("");
       setDuration("");
     } catch (err: unknown) {
-      // Type-safe para axios
       if (axios.isAxiosError(err)) {
-        console.error("Erro ao solicitar passeio:", err.response?.data || err.message);
+        showError(err.response?.data?.error || "Erro ao solicitar passeio");
       } else {
-        console.error("Erro ao solicitar passeio:", err);
+        showError("Erro inesperado ao solicitar passeio");
       }
-      alert("Erro ao solicitar passeio");
     }
   };
 
@@ -158,7 +175,7 @@ export default function FindWalker() {
           </IonCard>
         ))}
 
-        {/* MODAL */}
+        {/* Modal */}
         <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
           <IonContent className="ion-padding">
             <h2 style={{ textAlign: "center" }}>
@@ -186,6 +203,7 @@ export default function FindWalker() {
                 <IonDatetime
                   presentation="date"
                   value={date}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   onIonChange={(e) => setDate(e.detail.value!)}
                 />
               </IonItem>
@@ -195,6 +213,7 @@ export default function FindWalker() {
                 <IonInput
                   type="time"
                   value={time}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   onIonChange={(e) => setTime(e.detail.value!)}
                 />
               </IonItem>
@@ -204,8 +223,9 @@ export default function FindWalker() {
                 <IonInput
                   type="number"
                   value={duration}
-                  onIonChange={(e) => setDuration(e.detail.value!)}
                   placeholder="Ex: 30"
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  onIonChange={(e) => setDuration(e.detail.value!)}
                 />
               </IonItem>
             </IonList>
@@ -219,6 +239,15 @@ export default function FindWalker() {
             </IonButton>
           </IonContent>
         </IonModal>
+
+        {/* Toast global */}
+        <IonToast
+          isOpen={showToast}
+          message={toastMessage}
+          duration={2000}
+          color="danger"
+          onDidDismiss={() => setShowToast(false)}
+        />
       </IonContent>
     </IonPage>
   );

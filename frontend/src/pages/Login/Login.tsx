@@ -37,11 +37,16 @@ export default function Login() {
 
       // Redirecionar para o Profile
       window.location.href = "/profile";
+    } catch (error: unknown) {
+        let msg = "Erro ao fazer login";
 
-    } catch (error: any) {
-      console.error("Erro no login:", error);
+        if (axios.isAxiosError(error)) {
+          msg = error.response?.data?.error || msg;
+        } else if (error instanceof Error) {
+          msg = error.message;
+        }
 
-      setMessage(error.response?.data?.error || "Erro ao fazer login");
+      setMessage(msg);
       setShowError(true);
     }
   };
@@ -61,6 +66,7 @@ export default function Login() {
           <IonInput
             type="email"
             value={email}
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onIonChange={(e) => setEmail(e.detail.value!)}
           />
         </IonItem>
@@ -70,6 +76,7 @@ export default function Login() {
           <IonInput
             type="password"
             value={password}
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             onIonChange={(e) => setPassword(e.detail.value!)}
           />
         </IonItem>

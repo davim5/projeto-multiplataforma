@@ -17,6 +17,7 @@ import {
 import React, { useState } from "react";
 import axios from "axios";
 import { useIonRouter } from "@ionic/react";
+import { parseAxiosError } from "../../utils/parseAxiosError";
 
 export default function RegisterPet() {
   const router = useIonRouter();
@@ -52,9 +53,8 @@ export default function RegisterPet() {
       });
 
       router.push("/profile", "forward");
-
-    } catch (err: any) {
-      setErrorMsg(err.response?.data?.error || "Erro ao cadastrar o pet");
+    } catch (err: unknown) {
+      setErrorMsg(parseAxiosError(err, "Erro ao cadastrar o pet"));
       setShowError(true);
     }
   };
@@ -73,6 +73,7 @@ export default function RegisterPet() {
             <IonLabel position="stacked">Nome</IonLabel>
             <IonInput
               value={name}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onIonInput={(e: any) => setName(e.target.value)}
               placeholder="Ex: Rex"
               required
@@ -83,6 +84,7 @@ export default function RegisterPet() {
             <IonLabel position="stacked">Raça</IonLabel>
             <IonInput
               value={breed}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onIonInput={(e: any) => setBreed(e.target.value)}
               placeholder="Ex: Golden Retriever"
             />
@@ -92,6 +94,7 @@ export default function RegisterPet() {
             <IonLabel position="stacked">Idade</IonLabel>
             <IonInput
               value={age}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onIonInput={(e: any) => setAge(e.target.value)}
               placeholder="Ex: 2 anos"
             />
@@ -114,6 +117,7 @@ export default function RegisterPet() {
             <IonLabel position="stacked">Observações</IonLabel>
             <IonTextarea
               value={observations}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onIonInput={(e: any) => setObservations(e.target.value)}
               rows={4}
             />
