@@ -52,11 +52,11 @@ export const getWalksByWalker = async (req, res) => {
 export const updateWalk = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, owner_rating } = req.body;
+    const { status } = req.body;
 
     const walk = await Walk.findByIdAndUpdate(
       id,
-      { status, owner_rating },
+      { status },
       { new: true }
     );
 
@@ -77,5 +77,27 @@ export const deleteWalk = async (req, res) => {
     res.json({ message: "Walk deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateWalkStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const walk = await Walk.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!walk) {
+      return res.status(404).json({ error: "Walk not found" });
+    }
+
+    res.json(walk);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error updating status" });
   }
 };

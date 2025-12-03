@@ -15,7 +15,8 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonSpinner
+  IonSpinner,
+  IonActionSheet
 } from "@ionic/react";
 
 interface UserProfile {
@@ -28,13 +29,8 @@ interface UserProfile {
 
 interface Walk {
   _id: string;
-  pet_id: {
-    name: string;
-    _id: string;
-  };
-  owner_id: {
-    name: string;
-  };
+  pet_id: { name: string };
+  owner_id: { name: string };
   day: string;
   start_time: string;
   duration: number;
@@ -49,25 +45,52 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
   const [walks, setWalks] = useState<Walk[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Controle do ActionSheet
+  const [selectedWalk, setSelectedWalk] = useState<Walk | null>(null);
+  const [showActionSheet, setShowActionSheet] = useState(false);
+
+  const STATUS_LIST = ["pendente", "confirmado", "recusado", "concluido", "cancelado"];
+
   useEffect(() => {
-    const loadWalks = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const res = await axios.get("http://localhost:8000/api/walk/walker", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setWalks(res.data);
-      } catch (err) {
-        console.error("Erro ao carregar passeios:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadWalks();
   }, []);
+
+  const loadWalks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get("http://localhost:8000/api/walk/walker", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setWalks(res.data);
+    } catch (err) {
+      console.error("Erro ao carregar passeios:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Atualizar status do passeio
+  const updateWalkStatus = async (walkId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.patch(
+        `http://localhost:8000/api/walk/${walkId}`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Atualiza localmente sem recarregar
+      setWalks((prev) =>
+        prev.map((w) => (w._id === walkId ? { ...w, status: newStatus } : w))
+      );
+
+    } catch (err) {
+      console.error("Erro ao atualizar status:", err);
+    }
+  };
 
   return (
     <IonPage>
@@ -79,7 +102,7 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
 
       <IonContent className="ion-padding">
 
-        {/* FOTO / HEADER */}
+        {/* FOTO */}
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <IonAvatar style={{ margin: "0 auto", border: "4px solid white" }}>
             <img src="https://via.placeholder.com/120" alt="foto perfil" />
@@ -89,37 +112,19 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
           <p>{user.email}</p>
         </div>
 
-        {/* INFORMAÇÕES DO PASSEADOR */}
+        {/* Informações */}
         <IonList>
           <IonItem>
-            <IonLabel>
-              <strong>Telefone:</strong> {user.phone}
-            </IonLabel>
+            <IonLabel><strong>Telefone:</strong> {user.phone}</IonLabel>
           </IonItem>
-
           <IonItem>
-            <IonLabel>
-              <strong>Tipo:</strong> {user.type}
-            </IonLabel>
+            <IonLabel><strong>Tipo:</strong> {user.type}</IonLabel>
           </IonItem>
         </IonList>
 
-        {/* BOTÕES */}
-        <IonButton expand="block" onClick={() => window.location.href = "/profile/edit"}>
-          Editar Perfil
-        </IonButton>
-
-        <IonButton
-          expand="block"
-          color="medium"
-          onClick={() => window.location.href = "/profile/change-password"}
-        >
-          Trocar Senha
-        </IonButton>
-
         <hr style={{ margin: "20px 0" }} />
 
-        {/* LISTA DE PASSEIOS */}
+        {/* PASSEIOS */}
         <h2 style={{ textAlign: "center" }}>Passeios Agendados</h2>
 
         {loading ? (
@@ -128,16 +133,12 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
             <p>Carregando passeios...</p>
           </div>
         ) : walks.length === 0 ? (
-          <p style={{ textAlign: "center", marginTop: 10 }}>
-            Nenhum passeio agendado.
-          </p>
+          <p style={{ textAlign: "center" }}>Nenhum passeio agendado.</p>
         ) : (
           walks.map((walk) => (
             <IonCard key={walk._id}>
               <IonCardHeader>
-                <IonCardTitle>
-                  🐾 {walk.pet_id?.name || "Pet não encontrado"}
-                </IonCardTitle>
+                <IonCardTitle>🐾 {walk.pet_id?.name}</IonCardTitle>
               </IonCardHeader>
 
               <IonCardContent>
@@ -146,12 +147,41 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
                 <p><strong>Hora:</strong> {walk.start_time}</p>
                 <p><strong>Duração:</strong> {walk.duration} min</p>
                 <p><strong>Status:</strong> {walk.status}</p>
+
+                <IonButton
+                  expand="block"
+                  style={{ marginTop: 10 }}
+                  onClick={() => {
+                    setSelectedWalk(walk);
+                    setShowActionSheet(true);
+                  }}
+                >
+                  Alterar Status
+                </IonButton>
               </IonCardContent>
             </IonCard>
           ))
         )}
 
-        {/* BOTÃO SAIR */}
+        {/* ACTION SHEET */}
+        <IonActionSheet
+          isOpen={showActionSheet}
+          onDidDismiss={() => setShowActionSheet(false)}
+          header="Alterar status"
+          buttons={[
+            ...STATUS_LIST.map((s) => ({
+              text: s,
+              handler: () => {
+                if (selectedWalk) {
+                  updateWalkStatus(selectedWalk._id, s);
+                }
+              },
+            })),
+            { text: "Cancelar", role: "cancel" }
+          ]}
+        />
+
+        {/* botão sair */}
         <IonButton
           expand="block"
           color="danger"
@@ -163,7 +193,6 @@ export default function ProfileWalker({ user }: ProfileWalkerProps) {
         >
           Sair
         </IonButton>
-
       </IonContent>
     </IonPage>
   );

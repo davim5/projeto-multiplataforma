@@ -4,7 +4,8 @@ import {
     getWalksByUser,
     getWalksByWalker,
     updateWalk,
-    deleteWalk
+    deleteWalk,
+    updateWalkStatus
 } from "../controllers/walkController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
@@ -16,7 +17,9 @@ router.use(authMiddleware);
 router.post("/walk", createWalk);
 router.get("/walk/user", getWalksByUser);
 router.get("/walk/walker", getWalksByWalker);
-router.put("/:id", updateWalk);
-router.delete("/:id", deleteWalk);
+router.put("/walk/:id", updateWalk);
+router.delete("/walk/:id", deleteWalk);
+router.patch("/walk/:id", updateWalkStatus);
+
 
 export default router;

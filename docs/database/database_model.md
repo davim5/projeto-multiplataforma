@@ -67,7 +67,7 @@ O banco de dados MongoDB será composto pelas seguintes coleções principais:
 | Atributo     | Tipo     | Descrição                                        | Observações                                      |
 | :----------- | :------- | :----------------------------------------------- | :----------------------------------------------- |
 | `_id`        | ObjectId | Identificador único do passeador                 | Gerado automaticamente pelo MongoDB              |
-| `usuario_id` | ObjectId | Referência ao `_id` do usuário associado         | Chave estrangeira para a coleção `usuarios`      |
+| `user_id` | ObjectId | Referência ao `_id` do usuário associado         | Chave estrangeira para a coleção `usuarios`      |
 | `area`       | String   | Área de atuação do passeador                     | Ex: 
 
 Zona Sul, Centro, etc.                               |

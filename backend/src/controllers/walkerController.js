@@ -10,11 +10,11 @@ export const createWalker = async (req, res) => {
 };
 
 export const getWalkers = async (req, res) => {
-    res.json(await Walker.find().populate("usuario_id"));
+    res.json(await Walker.find().populate("user_id"));
 };
 
 export const getWalkerById = async (req, res) => {
-    const walker = await Walker.findById(req.params.id).populate("usuario_id");
+    const walker = await Walker.findById(req.params.id).populate("user_id");
     walker
         ? res.json(walker)
         : res.status(404).json({ error: "Walker not found" });
